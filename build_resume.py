@@ -1,677 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wesley Kipkorir — Backend &amp; AI Engineer</title>
-<meta name="description" content="Backend and AI engineer building bridges between legacy systems and modern AI — LegacyLink AI, Askforge, MwalimuPulse, and more." />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314161C'/%3E%3Ctext x='16' y='22' font-family='monospace' font-weight='700' font-size='15' fill='%232F3EFF' text-anchor='middle'%3EWK%3C/text%3E%3C/svg%3E" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=bricolage-grotesque@700,600,500,400&display=swap">
-<style>
-  :root {
-    --ink: #14161C;
-    --paper: #FFFFFF;
-    --cobalt: #2F3EFF;
-    --amber: #FFB800;
-    --coral: #FF4B3E;
-    --pine: #00875A;
-    --muted: #5B5F6B;
-    --hairline: #E7E5DD;
-    --display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
-    --mono: 'IBM Plex Mono', ui-monospace, monospace;
-    --body: 'Inter', system-ui, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--body);
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: inherit; }
-  img, svg { display: block; max-width: 100%; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
-  @media (max-width: 640px) { .wrap { padding: 0 20px; } }
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.lib.colors import HexColor
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
 
-  ::selection { background: var(--cobalt); color: #fff; }
+INK = HexColor("#14161C")
+COBALT = HexColor("#2F3EFF")
+MUTED = HexColor("#4B4F58")
 
-  /* skip link for keyboard users */
-  .skip-link {
-    position: absolute; left: -9999px; top: 0; background: var(--ink); color: #fff;
-    padding: 10px 16px; z-index: 200; font-family: var(--mono); font-size: 13px;
-  }
-  .skip-link:focus { left: 12px; top: 12px; }
+styles = getSampleStyleSheet()
 
-  :focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; }
+name_style = ParagraphStyle("Name", parent=styles["Normal"], fontName="Helvetica-Bold",
+                             fontSize=20, textColor=INK, spaceAfter=1, leading=23)
+title_style = ParagraphStyle("Title", parent=styles["Normal"], fontName="Helvetica-Bold",
+                              fontSize=11, textColor=COBALT, spaceAfter=4, leading=13)
+contact_style = ParagraphStyle("Contact", parent=styles["Normal"], fontName="Helvetica",
+                                fontSize=9, textColor=MUTED, spaceAfter=10, leading=12)
+section_style = ParagraphStyle("Section", parent=styles["Normal"], fontName="Helvetica-Bold",
+                                fontSize=10.5, textColor=INK, spaceBefore=10, spaceAfter=4,
+                                leading=12, alignment=TA_LEFT)
+body_style = ParagraphStyle("Body", parent=styles["Normal"], fontName="Helvetica",
+                             fontSize=9.3, textColor=INK, spaceAfter=3, leading=12.5)
+project_title_style = ParagraphStyle("ProjectTitle", parent=styles["Normal"], fontName="Helvetica-Bold",
+                                      fontSize=9.8, textColor=INK, spaceBefore=6, spaceAfter=1, leading=12)
+project_meta_style = ParagraphStyle("ProjectMeta", parent=styles["Normal"], fontName="Helvetica-Oblique",
+                                     fontSize=8.5, textColor=MUTED, spaceAfter=2, leading=11)
+bullet_style = ParagraphStyle("Bullet", parent=styles["Normal"], fontName="Helvetica",
+                               fontSize=9, textColor=INK, spaceAfter=2, leading=12,
+                               leftIndent=12, bulletIndent=0)
+skill_cat_style = ParagraphStyle("SkillCat", parent=styles["Normal"], fontName="Helvetica-Bold",
+                                  fontSize=9, textColor=INK, spaceAfter=1, leading=12)
+skill_body_style = ParagraphStyle("SkillBody", parent=styles["Normal"], fontName="Helvetica",
+                                   fontSize=9, textColor=MUTED, spaceAfter=4, leading=12)
 
-  /* ---------- nav ---------- */
-  header.nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(255,255,255,0.86);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--hairline);
-  }
-  .nav-inner {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
-  }
-  .nav-mark {
-    display: flex; align-items: center; gap: 10px;
-    font-family: var(--mono); font-weight: 700; font-size: 15px; text-decoration: none;
-  }
-  .nav-mark .chip {
-    width: 28px; height: 28px; border-radius: 7px; background: var(--ink);
-    color: var(--cobalt); display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700;
-  }
-  .nav-links { display: flex; align-items: center; gap: 28px; font-family: var(--mono); font-size: 13px; }
-  .nav-links a { text-decoration: none; color: var(--ink); position: relative; }
-  .nav-links a::after {
-    content: ''; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px;
-    background: var(--cobalt); transform: scaleX(0); transform-origin: left; transition: transform 0.2s;
-  }
-  .nav-links a:hover::after { transform: scaleX(1); }
-  .nav-cta {
-    background: var(--ink); color: #fff !important; padding: 8px 16px; border-radius: 999px;
-    text-decoration: none !important; font-weight: 600;
-  }
-  .nav-cta::after { display: none; }
-  @media (max-width: 720px) { .nav-links { display: none; } }
+doc = SimpleDocTemplate(
+    "/home/claude/portfolio/Wesley_Kipkorir_Resume.pdf",
+    pagesize=letter,
+    topMargin=0.5 * inch, bottomMargin=0.5 * inch,
+    leftMargin=0.65 * inch, rightMargin=0.65 * inch,
+)
 
-  /* ---------- hero ---------- */
-  .hero { position: relative; padding: 88px 0 72px; overflow: hidden; }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em;
-    background: var(--ink); color: #fff; padding: 6px 14px; border-radius: 999px;
-    margin-bottom: 28px;
-  }
-  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pine); }
-  h1.headline {
-    font-family: var(--display); font-weight: 700; letter-spacing: -0.02em;
-    font-size: clamp(40px, 6.4vw, 78px); line-height: 1.02; max-width: 15ch;
-  }
-  h1.headline .accent { color: var(--cobalt); }
-  h1.headline .accent2 { color: var(--coral); }
-  .hero-sub {
-    margin-top: 26px; max-width: 54ch; font-size: 19px; color: var(--muted); line-height: 1.6;
-  }
-  .hero-actions { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; }
-  .btn {
-    font-family: var(--mono); font-size: 14px; font-weight: 600; text-decoration: none;
-    padding: 14px 26px; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px;
-    transition: transform 0.15s ease;
-  }
-  .btn:hover { transform: translateY(-2px); }
-  .btn-primary { background: var(--cobalt); color: #fff; }
-  .btn-secondary { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+story = []
 
-  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px; }
-  .tag-pill {
-    font-family: var(--mono); font-size: 12.5px; padding: 7px 13px; border-radius: 999px;
-    border: 1.5px solid var(--hairline); color: var(--muted);
-  }
+story.append(Paragraph("Wesley Kipkorir", name_style))
+story.append(Paragraph("Backend &amp; AI Engineer", title_style))
+story.append(Paragraph(
+    "Nairobi, Kenya &nbsp;|&nbsp; wesley.kipkorir.kip@gmail.com &nbsp;|&nbsp; "
+    "linkedin.com/in/wesley-kipkorir-46a568266 &nbsp;|&nbsp; x.com/worsley_KE",
+    contact_style
+))
+story.append(HRFlowable(width="100%", thickness=1, color=INK, spaceAfter=6))
 
-  /* ---------- section shell ---------- */
-  section { position: relative; z-index: 1; }
-  .section-head { padding: 0 0 40px; }
-  .section-eyebrow {
-    font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--cobalt); font-weight: 700; margin-bottom: 10px; display: block;
-  }
-  .section-title {
-    font-family: var(--display); font-weight: 600; font-size: clamp(28px, 3.6vw, 42px);
-    letter-spacing: -0.01em; max-width: 20ch;
-  }
-  .section-desc { margin-top: 12px; color: var(--muted); font-size: 16px; max-width: 60ch; }
+story.append(Paragraph("SUMMARY", section_style))
+story.append(Paragraph(
+    "Backend software engineer focused on practical, production-shaped systems: RAG pipelines, "
+    "AI-assisted operational tooling, and integrations between modern web stacks and enterprise "
+    "systems. Comfortable across the full stack, from database design and authentication to "
+    "LLM tool-use design and deployment.",
+    body_style
+))
 
-  /* ---------- work slabs ---------- */
-  #work { padding: 90px 0 20px; }
-  .slab {
-    border-top: 3px solid var(--ink);
-    padding: 44px 0;
-    display: grid; grid-template-columns: 100px 1fr; gap: 32px;
-  }
-  @media (max-width: 780px) { .slab { grid-template-columns: 1fr; gap: 16px; } }
-  .slab-index {
-    padding-top: 2px;
-  }
-  .slab-index .status {
-    display: flex; align-items: center; justify-content: center;
-    width: 52px; height: 52px; border-radius: 12px;
-    font-family: var(--mono); font-size: 17px; font-weight: 700; color: #fff;
-  }
-  .slab[data-accent="cobalt"] .status { background: var(--cobalt); }
-  .slab[data-accent="amber"] .status { background: var(--amber); color: var(--ink); }
-  .slab[data-accent="coral"] .status { background: var(--coral); }
-  .slab-title {
-    font-family: var(--display); font-weight: 700; font-size: clamp(24px, 3.2vw, 34px);
-    letter-spacing: -0.01em; margin-bottom: 6px;
-  }
-  .slab-role { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 18px; }
-  .slab-desc { font-size: 16px; color: var(--ink); max-width: 66ch; line-height: 1.65; margin-bottom: 20px; }
-  .slab-highlights { list-style: none; margin-bottom: 22px; }
-  .slab-highlights li {
-    font-size: 14.5px; color: var(--muted); padding-left: 20px; position: relative; margin-bottom: 8px;
-    max-width: 62ch; line-height: 1.55;
-  }
-  .slab-highlights li::before {
-    content: '→'; position: absolute; left: 0; font-family: var(--mono); font-weight: 700;
-  }
-  .slab[data-accent="cobalt"] .slab-highlights li::before { color: var(--cobalt); }
-  .slab[data-accent="amber"] .slab-highlights li::before { color: var(--amber); }
-  .slab[data-accent="coral"] .slab-highlights li::before { color: var(--coral); }
-  .slab-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
-  .slab-tag {
-    font-family: var(--mono); font-size: 11.5px; padding: 5px 11px; border-radius: 6px;
-    background: #F5F4F0; color: var(--ink);
-  }
-  .slab-links { display: flex; gap: 20px; flex-wrap: wrap; }
-  .slab-link {
-    font-family: var(--mono); font-size: 13.5px; font-weight: 600; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 6px; border-bottom: 2px solid transparent;
-    padding-bottom: 2px; transition: border-color 0.15s;
-  }
-  .slab[data-accent="cobalt"] .slab-link { color: var(--cobalt); }
-  .slab[data-accent="amber"] .slab-link { color: #A67300; }
-  .slab[data-accent="coral"] .slab-link { color: var(--coral); }
-  .slab-link:hover { border-color: currentColor; }
-  .slab-bottom { border-bottom: 3px solid var(--ink); }
+story.append(Paragraph("PROJECTS", section_style))
 
-  /* ---------- more work grid ---------- */
-  #more-work { padding: 60px 0 90px; }
-  .grid-more { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-  @media (max-width: 700px) { .grid-more { grid-template-columns: 1fr; } }
-  .more-card {
-    border: 2px solid var(--hairline); border-radius: 16px; padding: 26px;
-    transition: border-color 0.15s, transform 0.15s;
-  }
-  .more-card:hover { border-color: var(--pine); transform: translateY(-3px); }
-  .more-card .dot-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
-  .more-card .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--pine); }
-  .more-card .label { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-  .more-card h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 8px; }
-  .more-card p { font-size: 14.5px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
-  .more-card .slab-tags { margin-bottom: 0; }
+projects = [
+    {
+        "title": "LegacyLink AI — Modernization layer for Progress OpenEdge ERPs",
+        "meta": "ABL, Python (FastAPI), JavaScript, SQLite/PostgreSQL, JWT auth",
+        "bullets": [
+            "Designed a three-tier architecture bridging a legacy OpenEdge/ABL ERP with a modern "
+            "Python orchestration layer and a real-time web dashboard.",
+            "Implemented the transactional outbox pattern in ABL triggers to enable change-data-capture "
+            "without native database log access, consumed by a Python event pipeline for real-time "
+            "anomaly alerts (stockouts, revenue drop-offs).",
+            "Built a natural-language query engine constrained to an allow-listed set of parameterized "
+            "query templates via forced LLM tool-use, eliminating prompt-injection-into-data-query as "
+            "an attack surface by design.",
+            "Implemented full role-based access control from scratch: JWT sessions, PBKDF2 password "
+            "hashing, self-service signup with least-privilege defaults, and admin-managed role promotion.",
+        ],
+    },
+    {
+        "title": "Askforge — RAG-based document and web Q&A application",
+        "meta": "Python, LangChain, ChromaDB, Multi-provider LLMs, Railway deployment",
+        "bullets": [
+            "Built and deployed a retrieval-augmented generation application supporting document and "
+            "web-based question answering, with multi-provider LLM support.",
+            "Diagnosed and resolved production deployment issues including Python version incompatibilities "
+            "with native extensions and provider API authentication changes.",
+        ],
+    },
+    {
+        "title": "MwalimuPulse — AI-powered school management system (Kenyan CBC context)",
+        "meta": "Node.js, Express, MongoDB/Mongoose, Next.js, Tailwind, OpenAI API",
+        "bullets": [
+            "Built a full-stack school management system with JWT-based role access control and "
+            "AI-driven student risk scoring.",
+            "Implemented a Next.js/Tailwind dashboard with live data visualizations for school administrators.",
+        ],
+    },
+    {
+        "title": "PostgreSQL School Management Database",
+        "meta": "PostgreSQL, SQL (triggers, stored functions, views)",
+        "bullets": [
+            "Designed an 11-table relational schema with triggers, stored functions, and reporting views "
+            "for a school administration domain.",
+        ],
+    },
+]
 
-  /* ---------- skills ---------- */
-  #skills { padding: 90px 0; background: #FAFAF7; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-  .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
-  @media (max-width: 900px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .skills-grid { grid-template-columns: 1fr; } }
-  .skill-group h3 {
-    font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;
-    margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--ink);
-  }
-  .skill-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .skill-chip {
-    font-size: 13.5px; padding: 6px 12px; border-radius: 8px; background: #fff;
-    border: 1.5px solid var(--hairline);
-  }
-  .skill-group:nth-child(1) h3 { border-color: var(--cobalt); }
-  .skill-group:nth-child(2) h3 { border-color: var(--amber); }
-  .skill-group:nth-child(3) h3 { border-color: var(--coral); }
-  .skill-group:nth-child(4) h3 { border-color: var(--pine); }
+for p in projects:
+    story.append(Paragraph(p["title"], project_title_style))
+    story.append(Paragraph(p["meta"], project_meta_style))
+    for b in p["bullets"]:
+        story.append(Paragraph(f"&bull;&nbsp;&nbsp;{b}", bullet_style))
 
-  /* ---------- about ---------- */
-  #about { padding: 90px 0; }
-  .about-grid { display: grid; grid-template-columns: 200px 1fr; gap: 48px; align-items: start; }
-  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
-  .monogram {
-    width: 140px; height: 140px; border-radius: 20px; background: var(--ink);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--display); font-weight: 700; font-size: 44px; color: var(--cobalt);
-    position: relative; overflow: hidden;
-  }
-  .monogram::after {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(255,184,0,0.25) 55%, transparent 70%);
-  }
-  .about-body p { font-size: 16.5px; color: var(--ink); line-height: 1.7; margin-bottom: 16px; max-width: 68ch; }
-  .about-facts { display: flex; gap: 26px; flex-wrap: wrap; margin-top: 24px; }
-  .about-fact { font-family: var(--mono); font-size: 13px; color: var(--muted); }
-  .about-fact strong { display: block; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+story.append(Paragraph("SKILLS", section_style))
+skills = [
+    ("Languages", "Python, JavaScript/TypeScript, SQL, ABL (Progress OpenEdge)"),
+    ("Backend & APIs", "FastAPI, Node.js/Express, REST API design, JWT authentication, PASOE/OpenEdge integration"),
+    ("AI / LLM", "RAG pipelines, LangChain, ChromaDB, prompt/tool-use design, Anthropic &amp; OpenAI APIs"),
+    ("Data", "PostgreSQL, MongoDB, SQLite, schema design, triggers &amp; stored procedures"),
+    ("Frontend", "React/Next.js, Tailwind CSS, Recharts"),
+    ("Tooling & Practices", "Docker, Git, CI-friendly project structure, Claude Code"),
+]
+for cat, body in skills:
+    story.append(Paragraph(cat, skill_cat_style))
+    story.append(Paragraph(body, skill_body_style))
 
-  /* ---------- contact / footer ---------- */
-  #contact {
-    padding: 90px 0 50px; background: var(--ink); color: #fff; margin-top: 40px;
-  }
-  #contact .section-title { color: #fff; }
-  #contact .section-desc { color: #B8BAC2; }
-  .contact-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 32px; }
-  #contact .btn-primary { background: var(--cobalt); }
-  #contact .btn-secondary { border-color: #fff; color: #fff; }
-  .site-footer {
-    margin-top: 70px; padding-top: 26px; border-top: 1px solid rgba(255,255,255,0.15);
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-    font-family: var(--mono); font-size: 12.5px; color: #9296A1;
-  }
-  .site-footer a { text-decoration: none; color: #9296A1; transition: color 0.15s; }
-  .site-footer a:hover { color: var(--amber); }
-  .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
-
-  /* ---------- experience ---------- */
-  #experience { padding: 90px 0; background: #FAFAF7; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
-  .exp-item {
-    display: grid; grid-template-columns: 220px 1fr; gap: 28px;
-    padding: 28px 0; border-top: 1px solid var(--hairline);
-  }
-  .exp-item:last-child { border-bottom: 1px solid var(--hairline); }
-  @media (max-width: 700px) { .exp-item { grid-template-columns: 1fr; gap: 8px; } }
-  .exp-meta { font-family: var(--mono); }
-  .exp-dates { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
-  .exp-accent { width: 30px; height: 4px; border-radius: 2px; margin-bottom: 10px; }
-  .exp-item:nth-child(1) .exp-accent { background: var(--cobalt); }
-  .exp-item:nth-child(2) .exp-accent { background: var(--amber); }
-  .exp-item:nth-child(3) .exp-accent { background: var(--coral); }
-  .exp-role { font-family: var(--display); font-weight: 700; font-size: 19px; margin-bottom: 3px; }
-  .exp-org { font-size: 14px; color: var(--muted); margin-bottom: 12px; }
-  .exp-bullets { list-style: none; }
-  .exp-bullets li {
-    font-size: 14.5px; color: var(--ink); padding-left: 18px; position: relative;
-    margin-bottom: 6px; line-height: 1.55; max-width: 60ch;
-  }
-  .exp-bullets li::before { content: '–'; position: absolute; left: 0; color: var(--muted); }
-
-  /* ---------- education & certifications ---------- */
-  #credentials { padding: 90px 0; }
-  .cred-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-  @media (max-width: 780px) { .cred-grid { grid-template-columns: 1fr; } }
-  .cred-block h3 {
-    font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;
-    margin-bottom: 18px; padding-bottom: 10px; border-bottom: 2px solid var(--ink);
-  }
-  .edu-degree { font-family: var(--display); font-weight: 700; font-size: 18px; margin-bottom: 4px; }
-  .edu-school { font-size: 14.5px; color: var(--muted); margin-bottom: 4px; }
-  .edu-dates { font-family: var(--mono); font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
-  .edu-note { font-size: 14px; color: var(--ink); line-height: 1.55; max-width: 50ch; }
-  .cert-list { list-style: none; }
-  .cert-list li {
-    font-size: 14.5px; padding: 10px 0; border-bottom: 1px solid var(--hairline);
-    display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  }
-  .cert-list li:last-child { border-bottom: none; }
-  .cert-name { color: var(--ink); font-weight: 500; }
-  .cert-issuer { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    * { transition: none !important; animation: none !important; }
-  }
-</style>
-</head>
-<body>
-<a href="#work" class="skip-link">Skip to work</a>
-
-<header class="nav">
-  <div class="wrap nav-inner">
-    <a href="#top" class="nav-mark"><span class="chip">WK</span> Wesley Kipkorir</a>
-    <nav class="nav-links">
-      <a href="#work">Work</a>
-      <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
-      <a href="#about">About</a>
-      <a href="#contact" class="nav-cta">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main id="top">
-
-  <section class="hero">
-    <div class="wrap">
-      <span class="eyebrow"><span class="dot"></span> SOFTWARE ENGINEER | AI | GenAI</span>
-      <h1 class="headline">I build <span class="accent">intelligent software </span>that solves<span class="accent2">  real business problems</span>.</h1>
-      <p class="hero-sub">      
-        I'm a Software Engineer focused on building modern web applications, AI-powered products,
-        scalable backend systems, and cloud-native solutions. I enjoy solving complex engineering challenges and
-        shipping software that delivers real business value.
-      </p>
-      <div class="hero-actions">
-        <a href="#work" class="btn btn-primary">View my work ↓</a>
-        <a href="Wesley_Kipkorir_Resume.pdf" class="btn btn-secondary" download>Download résumé</a>
-      </div>
-      <div class="hero-tags">
-        <span class="tag-pill">Node.js / Express</span>
-        <span class="tag-pill">React / Next.js</span>
-        <span class="tag-pill">TypeScript</span>
-        <span class="tag-pill">LangChain / RAG</span>
-        <span class="tag-pill">AWS</span>
-        <span class="tag-pill">Progress OpenEdge / ABL</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="work">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-eyebrow">Selected work</span>
-        <h2 class="section-title">Three projects, three different problems.</h2>
-        <p class="section-desc">
-          Each one solves something real — none of them are tutorials. Details, tradeoffs, and
-          honest limitations are part of the writeup, not hidden from it.
-        </p>
-      </div>
-
-      <article class="slab" data-accent="cobalt">
-        <div class="slab-index"><span class="status">01</span></div>
-        <div>
-          <h3 class="slab-title">LegacyLink AI</h3>
-          <p class="slab-role">Modernization &amp; intelligence layer for Progress OpenEdge ERPs</p>
-          <p class="slab-desc">
-            Thousands of manufacturers and distributors still run their core operations on OpenEdge —
-            30-year-old enterprise software few engineers can read anymore. LegacyLink AI sits on top
-            of an existing OpenEdge system, without replacing it, and adds a live dashboard, real-time
-            anomaly alerts, and a natural-language query box that never lets an LLM touch raw
-            production data.
-          </p>
-          <ul class="slab-highlights">
-            <li>Implemented the transactional outbox pattern directly in ABL triggers for change-data-capture, since OpenEdge has no native log-streaming connector.</li>
-            <li>Constrained the LLM to an allow-listed set of parameterized query templates via forced tool-use — a hijacked prompt can pick a template, nothing else.</li>
-            <li>Built real role-based access control: JWT sessions, PBKDF2 password hashing, self-service signup, admin-managed promotion, single-use password reset.</li>
-          </ul>
-          <div class="slab-tags">
-            <span class="slab-tag">ABL / OpenEdge</span>
-            <span class="slab-tag">Python / FastAPI</span>
-            <span class="slab-tag">PASOE REST</span>
-            <span class="slab-tag">JWT auth</span>
-            <span class="slab-tag">Claude tool-use</span>
-          </div>
-          <div class="slab-links">
-            <a href="#contact" class="slab-link">Request a live walkthrough →</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="slab" data-accent="amber">
-        <div class="slab-index"><span class="status">02</span></div>
-        <div>
-          <h3 class="slab-title">Askforge</h3>
-          <p class="slab-role">RAG-based document &amp; web Q&amp;A application</p>
-          <p class="slab-desc">
-            A genuine retrieval-augmented generation app, not a demo wrapper — built to answer
-            questions grounded in real uploaded documents (PDF, Word, CSV, Markdown, text) and live
-            web content, with support for multiple LLM providers so it isn't locked to one vendor's
-            uptime.
-          </p>
-          <ul class="slab-highlights">
-            <li>Designed a multi-provider LLM architecture (OpenAI, Mistral, Google Gemini) with automatic detection and failover, avoiding dependency on a single AI vendor.</li>
-            <li>Built a Flask REST API with real-time document upload, chunking, and vector embedding into a persistent ChromaDB store — zero downtime knowledge-base updates.</li>
-            <li>Diagnosed and resolved production-breaking Python 3.14 compatibility issues in native extensions, then deployed to Railway with Gunicorn, persistent storage, and environment-based secrets.</li>
-          </ul>
-          <div class="slab-tags">
-            <span class="slab-tag">Python / Flask</span>
-            <span class="slab-tag">LangChain</span>
-            <span class="slab-tag">ChromaDB</span>
-            <span class="slab-tag">Multi-provider LLMs</span>
-            <span class="slab-tag">Railway</span>
-          </div>
-          <div class="slab-links">
-            <a href="https://web-production-d46ef.up.railway.app/" target="_blank" rel="noopener noreferrer" class="slab-link">Live demo →</a>
-            <a href="https://github.com/Worsley-Labwes/contextIQ.git" target="_blank" rel="noopener noreferrer" class="slab-link">GitHub →</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="slab slab-bottom" data-accent="coral">
-        <div class="slab-index"><span class="status">03</span></div>
-        <div>
-          <h3 class="slab-title">MwalimuPulse</h3>
-          <p class="slab-role">AI-powered school management system for the Kenyan CBC curriculum</p>
-          <p class="slab-desc">
-            A full-stack platform built for the realities of Kenyan schools — role-based access for
-            different staff, AI-assisted student risk scoring, and dashboards administrators can
-            actually read at a glance.
-          </p>
-          <ul class="slab-highlights">
-            <li>Built JWT-based role access control across the API so different staff roles see only what they should.</li>
-            <li>Integrated OpenAI-driven risk scoring to flag students who may need early intervention.</li>
-            <li>Shipped a Next.js/Tailwind dashboard with live Recharts visualizations for school administrators.</li>
-          </ul>
-          <div class="slab-tags">
-            <span class="slab-tag">Node.js / Express</span>
-            <span class="slab-tag">MongoDB</span>
-            <span class="slab-tag">Next.js / Tailwind</span>
-            <span class="slab-tag">OpenAI API</span>
-          </div>
-          <div class="slab-links">
-            <a href="#contact" class="slab-link">Request a live walkthrough →</a>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section id="more-work">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-eyebrow">Also built</span>
-        <h2 class="section-title">Smaller projects, same attention to detail.</h2>
-      </div>
-      <div class="grid-more">
-        <div class="more-card">
-          <div class="dot-row"><span class="dot"></span><span class="label">DATABASE DESIGN</span></div>
-          <h3>PostgreSQL School Management DB</h3>
-          <p>An 11-table relational schema with triggers, stored functions, and reporting views — a single-file, GitHub-ready PostgreSQL project built to demonstrate real schema design, not just CRUD tables.</p>
-          <div class="slab-tags">
-            <span class="slab-tag">PostgreSQL</span>
-            <span class="slab-tag">Triggers &amp; functions</span>
-          </div>
-        </div>
-        <div class="more-card">
-          <div class="dot-row"><span class="dot"></span><span class="label">ONGOING</span></div>
-          <h3>eTIMS &amp; Kenyan compliance tooling</h3>
-          <p>Ongoing study and prototyping around Kenya Revenue Authority's eTIMS digital invoicing platform, with a focus on its application in the petroleum and fuel distribution sector.</p>
-          <div class="slab-tags">
-            <span class="slab-tag">Kenyan fintech context</span>
-            <span class="slab-tag">Compliance systems</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="experience">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-eyebrow">Experience</span>
-        <h2 class="section-title">Where I've put this to work.</h2>
-      </div>
-
-      <div class="exp-list">
-        <div class="exp-item">
-          <div class="exp-meta">
-            <div class="exp-accent"></div>
-            <div class="exp-dates">Jan 2026 — Present</div>
-          </div>
-          <div>
-            <div class="exp-role">Software Developer Intern</div>
-            <div class="exp-org">Kenya Revenue Authority (KRA) · Nairobi, Kenya</div>
-            <ul class="exp-bullets">
-              <li>Developed and supported internal digital systems and web-based tools.</li>
-              <li>Worked on API-driven integrations for system communication and data exchange.</li>
-              <li>Improved operational efficiency through automation and system support.</li>
-              <li>Assisted in network troubleshooting and IT infrastructure maintenance.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="exp-item">
-          <div class="exp-meta">
-            <div class="exp-accent"></div>
-            <div class="exp-dates">Jun 2024 — Oct 2025</div>
-          </div>
-          <div>
-            <div class="exp-role">Software Developer (Casual)</div>
-            <div class="exp-org">University of Embu · Embu, Kenya</div>
-            <ul class="exp-bullets">
-              <li>Developed and maintained university software applications, including web-based portals.</li>
-              <li>Designed, tested, and debugged software solutions; managed and maintained databases and system records.</li>
-              <li>Performed software upgrades, updates, and system integrations, with technical documentation and user guides.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="exp-item">
-          <div class="exp-meta">
-            <div class="exp-accent"></div>
-            <div class="exp-dates">May 2022 — Aug 2022</div>
-          </div>
-          <div>
-            <div class="exp-role">ICT &amp; Digital Operations Attaché</div>
-            <div class="exp-org">Winas Savings and Credit Co-Operative Society Limited · Embu, Kenya</div>
-            <ul class="exp-bullets">
-              <li>Developed practical proficiency in network protocols, configuration, and routine network management.</li>
-              <li>Supported troubleshooting activities and documentation for networking resources and equipment.</li>
-              <li>Contributed to inventory management procedures for IT and telecommunications assets.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="skills">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-eyebrow">Toolbox</span>
-        <h2 class="section-title">What I actually build with.</h2>
-      </div>
-      <div class="skills-grid">
-        <div class="skill-group">
-          <h3>Backend &amp; APIs</h3>
-          <div class="skill-chips">
-            <span class="skill-chip">Python</span>
-            <span class="skill-chip">FastAPI</span>
-            <span class="skill-chip">Node.js / Express</span>
-            <span class="skill-chip">REST API design</span>
-            <span class="skill-chip">JWT auth</span>
-            <span class="skill-chip">ABL / OpenEdge</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <h3>AI &amp; LLM</h3>
-          <div class="skill-chips">
-            <span class="skill-chip">RAG pipelines</span>
-            <span class="skill-chip">LangChain</span>
-            <span class="skill-chip">ChromaDB</span>
-            <span class="skill-chip">Tool-use design</span>
-            <span class="skill-chip">Anthropic API</span>
-            <span class="skill-chip">OpenAI API</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <h3>Data &amp; systems</h3>
-          <div class="skill-chips">
-            <span class="skill-chip">PostgreSQL</span>
-            <span class="skill-chip">MongoDB</span>
-            <span class="skill-chip">SQLite</span>
-            <span class="skill-chip">Schema design</span>
-            <span class="skill-chip">CDC / event pipelines</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <h3>Frontend &amp; tooling</h3>
-          <div class="skill-chips">
-            <span class="skill-chip">React / Next.js</span>
-            <span class="skill-chip">Tailwind CSS</span>
-            <span class="skill-chip">Recharts</span>
-            <span class="skill-chip">Docker</span>
-            <span class="skill-chip">Git</span>
-            <span class="skill-chip">Claude Code</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="credentials">
-    <div class="wrap">
-      <div class="cred-grid">
-        <div class="cred-block">
-          <h3>Education</h3>
-          <div class="edu-degree">BSc Computer Science</div>
-          <div class="edu-school">University of Embu · Embu, Kenya</div>
-          <div class="edu-dates">Sep 2019 — Sep 2024 · Second Class Honours (Upper Division)</div>
-          <p class="edu-note">
-            Relevant areas: software development, databases, networking, cloud technologies,
-            cybersecurity, and ICT governance.
-          </p>
-        </div>
-        <div class="cred-block">
-          <h3>Certifications</h3>
-          <ul class="cert-list">
-            <li><span class="cert-name">AWS Cloud Practitioner Essentials</span><span class="cert-issuer">Amazon Web Services · Sep 2025</span></li>
-            <li><span class="cert-name">Azure Cloud</span><span class="cert-issuer">Microsoft Learn / Simplilearn</span></li>
-            <li><span class="cert-name">Networking Certification</span><span class="cert-issuer">Cisco</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="about">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="section-eyebrow">About</span>
-        <h2 class="section-title">A little more context.</h2>
-      </div>
-      <div class="about-grid">
-        <div class="monogram" aria-hidden="true">WK</div>
-        <div class="about-body">
-          <p>
-            I'm Wesley a full-stack software engineer from Kenya, currently interning at the
-            Kenya Revenue Authority in Nairobi, working on internal digital systems and API-driven
-            integrations. Before that, I built and maintained software for the University of Embu,
-            where I earned my BSc in Computer Science.
-          </p>
-          <p>
-            My work tends to sit at the intersection of two things people rarely put together:
-            enterprise systems that have been running businesses for decades, and the modern AI
-            tooling that can finally make their data usable without ripping everything out and
-            starting over. I also spend time on Kenyan-context technology problems specifically —
-            CBC curriculum systems for schools, and KRA's own eTIMS digital invoicing platform.
-          </p>
-          <div class="about-facts">
-            <span class="about-fact"><strong>Based in</strong>Kenya</span>
-            <span class="about-fact"><strong>Currently</strong>Software Dev Intern @ KRA</span>
-            <span class="about-fact"><strong>Education</strong>BSc CS, University of Embu</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="wrap">
-      <span class="section-eyebrow" style="color: var(--amber);">Get in touch</span>
-      <h2 class="section-title">Let's talk about what you're building.</h2>
-      <p class="section-desc">
-        Whether it's a role, a project, or just a question about how something above was built —
-        I'm easy to reach.
-      </p>
-      <div class="contact-actions">
-        <a href="mailto:wesley.kipkorir.kip@gmail.com" class="btn btn-primary">Email me →</a>
-        <a href="https://www.linkedin.com/in/wesley-kipkorir-46a568266" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Connect on LinkedIn</a>
-        <a href="Wesley_Kipkorir_Resume.pdf" class="btn btn-secondary" download>Download résumé</a>
-      </div>
-
-      <div class="site-footer">
-        <span>© 2026 Wesley Kipkorir (Labwes)</span>
-        <div class="footer-links">
-          <a href="https://www.linkedin.com/in/wesley-kipkorir-46a568266" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="https://wa.me/254745764368" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-          <a href="https://x.com/worsley_KE" target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-          <a href="mailto:wesley.kipkorir.kip@gmail.com">Email</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</main>
-</body>
-</html>
+doc.build(story)
+print("resume built")

@@ -48,21 +48,6 @@
 
   :focus-visible { outline: 3px solid var(--cobalt); outline-offset: 2px; }
 
-  /* ---------- pipeline thread (signature element) ---------- */
-  .thread {
-    position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg,
-      var(--cobalt) 0%, var(--cobalt) 22%,
-      var(--amber) 22%, var(--amber) 48%,
-      var(--coral) 48%, var(--coral) 72%,
-      var(--pine) 72%, var(--pine) 100%);
-    opacity: 0.13;
-    pointer-events: none;
-    z-index: 0;
-  }
-  @media (max-width: 900px) { .thread { display: none; } }
-
   /* ---------- nav ---------- */
   header.nav {
     position: sticky; top: 0; z-index: 100;
@@ -153,14 +138,15 @@
   }
   @media (max-width: 780px) { .slab { grid-template-columns: 1fr; gap: 16px; } }
   .slab-index {
-    font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--muted);
-    padding-top: 6px;
+    padding-top: 2px;
   }
   .slab-index .status {
-    display: block; margin-top: 10px; width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    width: 52px; height: 52px; border-radius: 12px;
+    font-family: var(--mono); font-size: 17px; font-weight: 700; color: #fff;
   }
   .slab[data-accent="cobalt"] .status { background: var(--cobalt); }
-  .slab[data-accent="amber"] .status { background: var(--amber); }
+  .slab[data-accent="amber"] .status { background: var(--amber); color: var(--ink); }
   .slab[data-accent="coral"] .status { background: var(--coral); }
   .slab-title {
     font-family: var(--display); font-weight: 700; font-size: clamp(24px, 3.2vw, 34px);
@@ -320,7 +306,6 @@
 </head>
 <body>
 <a href="#work" class="skip-link">Skip to work</a>
-<div class="thread" aria-hidden="true"></div>
 
 <header class="nav">
   <div class="wrap nav-inner">
@@ -339,13 +324,12 @@
 
   <section class="hero">
     <div class="wrap">
-      <span class="eyebrow"><span class="dot"></span> SOFTWARE DEVELOPER INTERN @ KENYA REVENUE AUTHORITY</span>
-      <h1 class="headline">I build the bridge between <span class="accent">legacy systems</span> and <span class="accent2">modern AI</span>.</h1>
-      <p class="hero-sub">
-        Full-stack software engineer based in Kenya, working across Node.js, React, and Python —
-        with a growing focus on AI-powered systems and the enterprise platforms most engineers
-        avoid. Currently interning at KRA; previously built and shipped software for the University
-        of Embu.
+      <span class="eyebrow"><span class="dot"></span> SOFTWARE ENGINEER | AI | GenAI</span>
+      <h1 class="headline">I build <span class="accent">intelligent software </span>that solves<span class="accent2">  real business problems</span>.</h1>
+      <p class="hero-sub">      
+        I'm a Software Engineer focused on building modern web applications, AI-powered products,
+        scalable backend systems, and cloud-native solutions. I enjoy solving complex engineering challenges and
+        shipping software that delivers real business value.
       </p>
       <div class="hero-actions">
         <a href="#work" class="btn btn-primary">View my work ↓</a>
@@ -374,7 +358,7 @@
       </div>
 
       <article class="slab" data-accent="cobalt">
-        <div class="slab-index">01<span class="status" aria-hidden="true"></span></div>
+        <div class="slab-index"><span class="status">01</span></div>
         <div>
           <h3 class="slab-title">LegacyLink AI</h3>
           <p class="slab-role">Modernization &amp; intelligence layer for Progress OpenEdge ERPs</p>
@@ -404,7 +388,7 @@
       </article>
 
       <article class="slab" data-accent="amber">
-        <div class="slab-index">02<span class="status" aria-hidden="true"></span></div>
+        <div class="slab-index"><span class="status">02</span></div>
         <div>
           <h3 class="slab-title">Askforge</h3>
           <p class="slab-role">RAG-based document &amp; web Q&amp;A application</p>
@@ -434,7 +418,7 @@
       </article>
 
       <article class="slab slab-bottom" data-accent="coral">
-        <div class="slab-index">03<span class="status" aria-hidden="true"></span></div>
+        <div class="slab-index"><span class="status">03</span></div>
         <div>
           <h3 class="slab-title">MwalimuPulse</h3>
           <p class="slab-role">AI-powered school management system for the Kenyan CBC curriculum</p>
@@ -640,7 +624,7 @@
         <div class="monogram" aria-hidden="true">WK</div>
         <div class="about-body">
           <p>
-            I'm Wesley — a full-stack software engineer from Kenya, currently interning at the
+            I'm Wesley a full-stack software engineer from Kenya, currently interning at the
             Kenya Revenue Authority in Nairobi, working on internal digital systems and API-driven
             integrations. Before that, I built and maintained software for the University of Embu,
             where I earned my BSc in Computer Science.
